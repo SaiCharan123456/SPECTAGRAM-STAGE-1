@@ -13,9 +13,7 @@ const BottomTabNavigator = () => {
     <Tab.Navigator
       labeled={false} 
       barStyle={styles.bottomTabStyle}
-       screenOptions={{
-        headerShown: false
-      }}
+      
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
