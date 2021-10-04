@@ -10,7 +10,7 @@ import {
      ScrollView,
      TextInput
      } from 'react-native';
- import DropDownPicker from "react-native-dropdown-picker";
+import DropDownPicker from "react-native-dropdown-picker"
 //import { white } from 'react-native-paper/lib/typescript/styles/colors';
      import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -70,17 +70,17 @@ export default class CreatePost extends Component{
                     backgroundColor:"red"
                   }}
                   onOpen={() => {
-                    this.setState({ dropdownHeight: 200 });
+                    this.setState({ dropdownHeight: 50 });
                   }}
                   onClose={() => {
-                    this.setState({ dropdownHeight: 60 });
+                    this.setState({ dropdownHeight: 50 });
                   }}
                   style={{ backgroundColor: "transparent" }}
                   itemStyle={{
-                    justifyContent: "center"
+                    justifyContent: "flex-start"
                     
                   }}
-                  dropDownStyle={{ backgroundColor: "#2f345d" }}
+                  dropDownStyle={{ backgroundColor: "blue" }}
                   labelStyle={{
                     color: "white",
                    // fontFamily: "Bubblegum-Sans"

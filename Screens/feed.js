@@ -19,7 +19,7 @@ export default class Feed extends Component{
         super(props);        
       }
     renderItem = ({ item: story }) => {
-        return <PostCard story={story} />;
+           return <PostCard story={story} navigation={this.props.navigation} />;
       };
     
       keyExtractor = ( item ,index) => index.toString();

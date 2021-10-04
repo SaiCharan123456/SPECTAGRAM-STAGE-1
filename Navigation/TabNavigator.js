@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { RFValue } from "react-native-responsive-fontsize";
-
 import Feed from "../screens/Feed";
 import CreatePost from "../screens/CreatePost";
 const Tab = createMaterialBottomTabNavigator();
