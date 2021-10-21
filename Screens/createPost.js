@@ -20,9 +20,28 @@ export default class CreatePost extends Component{
         super(props);
         this.state = {         
           previewImage: "image_1",
+          light_theme: true,
           dropdownHeight: 50
         };
       }
+
+
+      componentDidMount() {
+        this.fetchUser();
+      }
+    
+      fetchUser = () => {
+        let theme;
+        firebase
+          .database()
+          .ref("/users/" + firebase.auth().currentUser.uid)
+          .on("value", snapshot => {
+            theme = snapshot.val().current_theme;
+            this.setState({ light_theme: theme === "light" });
+          });
+      };
+    
+
     render(){
 
        let preview_images = {
@@ -33,7 +52,7 @@ export default class CreatePost extends Component{
             image_5: require("../assets/image_5.jpg"),
           };
         return(
-            <View style={styles.container} >
+            <View style={this.state.light_theme ? styles.containerLight : styles.container} >
                 
                  
             <SafeAreaView style={styles.droidSafeArea} />
@@ -44,7 +63,9 @@ export default class CreatePost extends Component{
                        style={styles.iconImage} />
                 </View>
                 <View style={styles.appTitleTextContainer} >
-                    <Text style={styles.appTitleText} > New Post </Text>
+                    <Text style={this.state.light_theme
+                    ? styles.appTitleTextLight
+                    : styles.appTitleText} > New Post </Text>
                 </View>
             </View>
             <View style={styles.fieldsContainer} >
@@ -80,15 +101,17 @@ export default class CreatePost extends Component{
                     justifyContent: "flex-start"
                     
                   }}
-                  dropDownStyle={{ backgroundColor: "blue" }}
-                  labelStyle={{
-                    color: "white",
-                   // fontFamily: "Bubblegum-Sans"
-                  }}
-                  arrowStyle={{
-                   color:"red"
-                   // fontFamily: "Bubblegum-Sans"
-                  }}
+                  dropDownStyle={{ backgroundColor: this.state.light_theme ? "#eee" : "#2f345d"}}
+                  labelStyle={
+                    this.state.light_theme
+                    ? styles.dropdownLabelLight
+                    : styles.dropdownLabel
+                  }
+                  arrowStyle={
+                    this.state.light_theme
+                    ? styles.dropdownLabelLight
+                    : styles.dropdownLabel
+                  }
                   onChangeItem={item =>
                     this.setState({
                       previewImage: item.value
@@ -98,10 +121,14 @@ export default class CreatePost extends Component{
               </View>
 
               <TextInput
-                style={styles.inputFont}
+                style={  
+                  this.state.light_theme
+                  ? styles.inputFontLight
+                  : styles.inputFont
+                }
                 onChangeText={caption => this.setState({ caption })}
                 placeholder={"Caption"}
-                placeholderTextColor="white"
+                placeholderTextColor= { this.state.light_theme ? "black" : "white"}
               />             
             </ScrollView>
           </View>          
@@ -117,6 +144,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#303666",
+    },
+    containerLight: {
+      flex: 1,
+      backgroundColor: "white"
     },
     droidSafeArea: {
         marginTop: Platform.OS === "android" ? StatusBar.currentHeight : RFValue(35),
@@ -140,6 +171,23 @@ const styles = StyleSheet.create({
         alignItems: "center",
         position: 'sticky',
         margin:10,
+    },
+    inputFontLight: {
+      height: RFValue(40),
+      borderColor: "black",
+      borderWidth: RFValue(1),
+      borderRadius: RFValue(10),
+      paddingLeft: RFValue(10),
+      color: "black",
+      fontFamily: "Bubblegum-Sans"
+    },
+    dropdownLabel: {
+      color: "white",
+      fontFamily: "Bubblegum-Sans"
+    },
+    dropdownLabelLight: {
+      color: "black",
+      fontFamily: "Bubblegum-Sans"
     },
     iconImage: {
         width: "100%",
@@ -187,6 +235,11 @@ const styles = StyleSheet.create({
     paddingLeft: RFValue(10),
     color: "white",
     //fontFamily: "Bubblegum-Sans"
+  },
+  appTitleTextLight: {
+    color: "black",
+    fontSize: RFValue(28),
+    fontFamily: "Bubblegum-Sans"
   },
  
 });

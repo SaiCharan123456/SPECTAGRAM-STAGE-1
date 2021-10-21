@@ -16,8 +16,29 @@ let posts = require('./temp_post.json');
 
 export default class Feed extends Component{
     constructor(props) {
-        super(props);        
+        super(props);    
+        this.state = {
+           
+            light_theme: true
+          };    
       }
+
+      componentDidMount() {
+       
+        this.fetchUser();
+      }
+    
+      fetchUser = () => {
+        let theme;
+        firebase
+          .database()
+          .ref("/users/" + firebase.auth().currentUser.uid)
+          .on("value", snapshot => {
+            theme = snapshot.val().current_theme;
+            this.setState({ light_theme: theme === "light" });
+          });
+      };
+
     renderItem = ({ item: story }) => {
            return <PostCard story={story} navigation={this.props.navigation} />;
       };
@@ -25,7 +46,7 @@ export default class Feed extends Component{
       keyExtractor = ( item ,index) => index.toString();
     render(){
         return(
-            <View style={styles.container} >
+            <View style={ this.state.light_theme ? styles.containerLight : styles.container} >
                 <SafeAreaView style={styles.droidSafeArea} />
                 <View style={styles.appTitle} >
                     <View style={styles.appIcon} >
@@ -34,7 +55,9 @@ export default class Feed extends Component{
                            style={styles.iconImage} />
                     </View>
                     <View style={styles.appTitleTextContainer} >
-                        <Text style={styles.appTitleText} > Spectagram 1 </Text>
+                        <Text style={ this.state.light_theme
+                    ? styles.appTitleTextLight
+                    : styles.appTitleText} > Spectagram 1 </Text>
                     </View>
                 </View>
                 <View style={styles.cardContainer} >
@@ -52,47 +75,44 @@ export default class Feed extends Component{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#303666",
-    },
-    droidSafeArea: {
-        marginTop: Platform.OS === "android" ? StatusBar.currentHeight : RFValue(35),
-    },
-    appTitle: {
-        flex: 0.16,
-        flexDirection: "row",
-        justifyContent:'center',
-        alignSelf:'center',
-        marginBottom:-100,
-        marginLeft:RFValue(0),
-        position: 'sticky',
-        overflow: "hidden",
-       position: "absolute",
-        height:"15%",
-    },
-    appIcon: {
-        flex: 0.2,
+        backgroundColor: "#15193c"
+      },
+      containerLight: {
+        flex: 1,
+        backgroundColor: "white"
+      },
+      droidSafeArea: {
+        marginTop: Platform.OS === "android" ? StatusBar.currentHeight : RFValue(35)
+      },
+      appTitle: {
+        flex: 0.07,
+        flexDirection: "row"
+      },
+      appIcon: {
+        flex: 0.3,
         justifyContent: "center",
-        alignItems: "center",
-        position: 'sticky',
-        margin:3,
-    },
-    iconImage: {
+        alignItems: "center"
+      },
+      iconImage: {
         width: "100%",
         height: "100%",
-        resizeMode: "contain",
-    },
-    appTitleTextContainer: {
-        flex: 0.8,
-        justifyContent: "center",
-        position: 'sticky',
-        
-    },
-    appTitleText: {
+        resizeMode: "contain"
+      },
+      appTitleTextContainer: {
+        flex: 0.7,
+        justifyContent: "center"
+      },
+      appTitleText: {
         color: "white",
         fontSize: RFValue(28),
-        position: 'sticky',
-    },
-    cardContainer: {
-        flex: 0.85,
-    },
+        fontFamily: "Bubblegum-Sans"
+      },
+      appTitleTextLight: {
+        color: "black",
+        fontSize: RFValue(28),
+        fontFamily: "Bubblegum-Sans"
+      },
+      cardContainer: {
+        flex: 0.85
+      }
   }); 

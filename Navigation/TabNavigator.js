@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { StyleSheet } from "react-native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -7,11 +7,34 @@ import Feed from "../screens/Feed";
 import CreatePost from "../screens/CreatePost";
 const Tab = createMaterialBottomTabNavigator();
 
-const BottomTabNavigator = () => {
+
+export default class BottomTabNavigator extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      light_theme: true
+    };
+  }
+
+  componentDidMount() {
+    let theme;
+    firebase
+      .database()
+      .ref("/users/" + firebase.auth().currentUser.uid)
+      .on("value", function (snapshot) {
+        theme = snapshot.val().current_theme;
+      });
+    this.setState({ light_theme: theme === "light" ? true : false });
+  }
+  render() {
   return (
     <Tab.Navigator
       labeled={false} 
-      barStyle={styles.bottomTabStyle}
+      barStyle={ 
+        this.state.light_theme
+        ? styles.bottomTabStyleLight
+        : styles.bottomTabStyle
+      }
       
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
@@ -38,6 +61,7 @@ const BottomTabNavigator = () => {
       <Tab.Screen name="Create Post" component={CreatePost} />
     </Tab.Navigator>
   );
+    }
 };
 
 const styles = StyleSheet.create({
@@ -49,6 +73,14 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "absolute"
   },
+  bottomTabStyleLight: {
+    backgroundColor: "#eaeaea",
+    height: RFValue("10%"),
+    borderTopLeftRadius: RFValue(30),
+    borderTopRightRadius: RFValue(30),
+    overflow: "hidden",
+    position: "absolute"
+  },
   icons: {
     width: RFValue(20),
     height: RFValue(20),
@@ -56,4 +88,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default BottomTabNavigator;
+
